@@ -1,8 +1,8 @@
 import cv2
 import math
 
-blurSize : int = 0
-medianSize : int = 0
+blurSize = 0
+medianSize = 0
 gaussSize = 0.0
 
 def onBlurSizeChanged(pos):
