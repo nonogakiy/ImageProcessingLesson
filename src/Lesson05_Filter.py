@@ -2,14 +2,14 @@ import cv2
 
 gaussSize = 0.0
 
-def onValueChanged(pos):
+def onGaussSizeChanged(pos):
     global gaussSize
     gaussSize = pos / 255 * 5
 
 empire_photo = cv2.imread('./data/empire.jpg')
 
 cv2.imshow('FilterTest', empire_photo)
-cv2.createTrackbar('Size', 'FilterTest', 0, 255, onValueChanged)
+cv2.createTrackbar('Size', 'FilterTest', 0, 255, onGaussSizeChanged
 
 while True:
     if gaussSize == 0:
