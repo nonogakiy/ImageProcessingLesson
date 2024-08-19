@@ -1,7 +1,7 @@
 import sys
-from PyQt6.QtWidgets import *
-from PyQt6.QtGui import *
-from PyQt6.QtCore import Qt
+from PySide6.QtWidgets import *
+from PySide6.QtGui import *
+from PySide6.QtCore import *
 import cv2
 import math
 
@@ -47,6 +47,7 @@ class FilterApp(QWidget):
             if blur_size != 0:
                 blimg = cv2.blur(self.empire_cv, (blur_size, blur_size))
                 pmap = QPixmap.fromImage(cv2qt(blimg))
+                self.scene.clear()
                 self.scene.addPixmap(pmap)
                 self.view.setScene(self.scene)
         elif fn == 'MedianBlur':
@@ -54,6 +55,7 @@ class FilterApp(QWidget):
             if blur_size != 0:
                 blimg = cv2.medianBlur(self.empire_cv, blur_size)
                 pmap = QPixmap.fromImage(cv2qt(blimg))
+                self.scene.clear()
                 self.scene.addPixmap(pmap)
                 self.view.setScene(self.scene)
         elif fn == 'Gaussian':
@@ -61,6 +63,7 @@ class FilterApp(QWidget):
             if blur_size != 0.0:
                 blimg = cv2.GaussianBlur(self.empire_cv, (31,31), blur_size)
                 pmap = QPixmap.fromImage(cv2qt(blimg))
+                self.scene.clear()
                 self.scene.addPixmap(pmap)
                 self.view.setScene(self.scene)
         else:
@@ -68,6 +71,7 @@ class FilterApp(QWidget):
             if blur_size != 0.0:
                 blimg = cv2.bilateralFilter(self.empire_cv, d=5,sigmaColor = blur_size, sigmaSpace=200.0)
                 pmap = QPixmap.fromImage(cv2qt(blimg))
+                self.scene.clear()
                 self.scene.addPixmap(pmap)
                 self.view.setScene(self.scene)
 
