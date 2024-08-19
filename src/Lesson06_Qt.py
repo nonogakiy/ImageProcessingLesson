@@ -66,7 +66,7 @@ class FilterApp(QWidget):
         else:
             blur_size = x / 255 * 1000.0
             if blur_size != 0.0:
-                blimg = cv2.bilateralFilter(self.empire_cv, d=5,sigmaColor = blur_size, sigmaSpace=5.0)
+                blimg = cv2.bilateralFilter(self.empire_cv, d=5,sigmaColor = blur_size, sigmaSpace=200.0)
                 pmap = QPixmap.fromImage(cv2qt(blimg))
                 self.scene.addPixmap(pmap)
                 self.view.setScene(self.scene)
