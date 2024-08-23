@@ -44,9 +44,13 @@ class FilterApp(QMainWindow):
         MainContent = QWidget()
         MainContent.setLayout(hbox)
         self.setCentralWidget(MainContent)
-        #
+        # Window Title
         self.setWindowTitle('Filter')
         #
+        self.topMenu = self.menuBar()
+        self.topMenu.menu_file = self.topMenu.addMenu('File')
+        self.topMenu.menu_edit = self.topMenu.addMenu('Edit')
+        #　Status Bar
         self.sbMessage = self.statusBar()
         self.sbMessage.showMessage('Status: 初期状態')
 
