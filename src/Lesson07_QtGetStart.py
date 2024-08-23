@@ -8,6 +8,7 @@ class MyMainWindow(QMainWindow):
     # コンストラクタ
     def __init__(self):
         super().__init__()
+        #
         self.setWindowTitle('MyQtWindow')
 
 MyApp = QApplication(sys.argv)
