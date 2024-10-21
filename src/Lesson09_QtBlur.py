@@ -11,8 +11,10 @@ class MyMainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         #
-        self.firstBtn = QPushButton('first')
-        self.secondBtn = QPushButton('second')
+        self.resetBtn = QPushButton('Reset')
+        self.resetBtn.clicked.connect(self.resetBtnClicked)
+        self.blurBtn = QPushButton('Blur')
+        self.blurBtn.clicked.connect(self.blurBtnClicked)
 
         self.empire_cv = cv2.imread('./data/empire.jpg')
         self.scene = QGraphicsScene()
@@ -23,8 +25,8 @@ class MyMainWindow(QMainWindow):
         self.view.setScene(self.scene)
 
         vbox = QVBoxLayout()
-        vbox.addWidget(self.firstBtn)
-        vbox.addWidget(self.secondBtn)
+        vbox.addWidget(self.resetBtn)
+        vbox.addWidget(self.blurBtn)
         vbox.addStretch()
         
         hbox = QHBoxLayout()
@@ -36,6 +38,19 @@ class MyMainWindow(QMainWindow):
         self.setCentralWidget(MainContents)
 
         self.setWindowTitle('MyQtWindow')
+    
+    def blurBtnClicked(self):
+        blimg = cv2.blur(self.empire_cv, (20, 20))
+        pmap = QPixmap.fromImage(cv2qt(blimg))
+        self.scene.clear()
+        self.scene.addPixmap(pmap)
+        self.view.setScene(self.scene)
+    
+    def resetBtnClicked(self):
+        pmap = QPixmap.fromImage(cv2qt(self.empire_cv))
+        self.scene.clear()
+        self.scene.addPixmap(pmap)
+        self.view.setScene(self.scene)
 
 def cv2qt(cv_img):
     height, width, depth = cv_img.shape
