@@ -5,6 +5,7 @@ import sys
 from PySide6.QtWidgets import *
 from PySide6.QtGui import *
 import cv2
+import numpy as np
 
 class MyMainWindow(QMainWindow):
     # コンストラクタ
@@ -13,10 +14,10 @@ class MyMainWindow(QMainWindow):
         #
         self.resetBtn = QPushButton('Reset')
         self.resetBtn.clicked.connect(self.resetBtnClicked)
-        self.blurBtn = QPushButton('Blur')
-        self.blurBtn.clicked.connect(self.blurBtnClicked)
+        self.FFTBtn = QPushButton('FFT')
+        self.FFTBtn.clicked.connect(self.FFTBtnClicked)
         #
-        self.empire_cv = cv2.imread('./data/empire.jpg')
+        self.empire_cv = cv2.imread('./data/empire.jpg', cv2.IMREAD_GRAYSCALE)
         self.scene = QGraphicsScene()
         self.view = QGraphicsView()
         empire_qt = cv2qt(self.empire_cv)
@@ -26,7 +27,7 @@ class MyMainWindow(QMainWindow):
         #
         vbox = QVBoxLayout()
         vbox.addWidget(self.resetBtn)
-        vbox.addWidget(self.blurBtn)
+        vbox.addWidget(self.FFTBtn)
         vbox.addStretch()
         #
         hbox = QHBoxLayout()
@@ -39,9 +40,10 @@ class MyMainWindow(QMainWindow):
         #
         self.setWindowTitle('MyQtWindow')
     
-    def blurBtnClicked(self):
-        blimg = cv2.blur(self.empire_cv, (20, 20))
-        pmap = QPixmap.fromImage(cv2qt(blimg))
+    def FFTBtnClicked(self):
+        f = np.fft.fft2(self.empire_cv)
+        f_mag = 20*np.log(np.abs(f))
+        pmap = QPixmap.fromImage(cv2qt(f_mag))
         self.scene.clear()
         self.scene.addPixmap(pmap)
         self.view.setScene(self.scene)
@@ -53,9 +55,8 @@ class MyMainWindow(QMainWindow):
         self.view.setScene(self.scene)
 
 def cv2qt(cv_img):
-    height, width, depth = cv_img.shape
-    imrgb = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
-    qt_img = QImage(imrgb.data, width, height, depth*width, QImage.Format_RGB888)
+    height, width = cv_img.shape
+    qt_img = QImage(cv_img, width, height, width, QImage.Format_Grayscale8)
     return qt_img
 
 MyApp = QApplication(sys.argv)
