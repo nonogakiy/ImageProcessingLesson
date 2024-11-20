@@ -14,20 +14,32 @@ class MyMainWindow(QMainWindow):
         #
         self.resetBtn = QPushButton('Reset')
         self.resetBtn.clicked.connect(self.resetBtnClicked)
-        self.FFTBtn = QPushButton('FFT')
-        self.FFTBtn.clicked.connect(self.FFTBtnClicked)
-        #
-        self.empire_cv = cv2.imread('./data/empire.jpg', cv2.IMREAD_GRAYSCALE)
+        self.fftBtn = QPushButton('FFT')
+        self.fftBtn.clicked.connect(self.fftBtnClicked)
+        # ----
+        width = 512
+        height = 512
+        self.currmat = np.zeros((width, height), dtype=float)
+        x_ind = np.arange(0, width, 1)
+        y_ind = np.arange(0, height, 1)
+        x_mes, y_mes = np.meshgrid(x_ind, y_ind)
+        self.currmat = np.cos(2*np.pi / width * 30 * x_mes + 2*np.pi / height * 10 *y_mes)
+        self.currimg_cv = (100 * (self.currmat + 1)).astype(np.uint8)
+        # --------
         self.scene = QGraphicsScene()
         self.view = QGraphicsView()
-        empire_qt = cv2qt(self.empire_cv)
-        pmap = QPixmap.fromImage(empire_qt)
+        currimg_qt = cv2qt(self.currimg_cv)
+        # -----
+        #self.scene = QGraphicsScene()
+        #self.view = QGraphicsView()
+        #empire_qt = cv2qt(self.empire_cv)
+        pmap = QPixmap.fromImage(currimg_qt)
         self.scene.addPixmap(pmap)
         self.view.setScene(self.scene)
         #
         vbox = QVBoxLayout()
         vbox.addWidget(self.resetBtn)
-        vbox.addWidget(self.FFTBtn)
+        vbox.addWidget(self.fftBtn)
         vbox.addStretch()
         #
         hbox = QHBoxLayout()
@@ -40,16 +52,19 @@ class MyMainWindow(QMainWindow):
         #
         self.setWindowTitle('MyQtWindow')
     
-    def FFTBtnClicked(self):
-        f = np.fft.fft2(self.empire_cv)
-        f_mag = 20*np.log(np.abs(f))
-        pmap = QPixmap.fromImage(cv2qt(f_mag))
+    def fftBtnClicked(self):
+        f = np.fft.fft2(self.currmat)
+        f_shift = np.fft.fftshift(f)
+        f_mag = np.abs(f_shift)/3
+        f_u8 = f_mag.astype(np.uint8)
+        print(f'shape={f_u8.shape}, type={f_u8.dtype}')
+        pmap = QPixmap.fromImage(cv2qt(f_u8))
         self.scene.clear()
         self.scene.addPixmap(pmap)
         self.view.setScene(self.scene)
     
     def resetBtnClicked(self):
-        pmap = QPixmap.fromImage(cv2qt(self.empire_cv))
+        pmap = QPixmap.fromImage(cv2qt(self.currimg_cv))
         self.scene.clear()
         self.scene.addPixmap(pmap)
         self.view.setScene(self.scene)
